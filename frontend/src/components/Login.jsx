@@ -15,7 +15,7 @@ import {
 
 import Notify from 'simple-notify'
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext,useEffect } from 'react';
 import BlogContext from '../store/blog-context';
 
 function Login() {
@@ -23,7 +23,13 @@ function Login() {
     const navigate = useNavigate();
     const {isLoggedIn,setIsLoggedIn} = useContext(BlogContext);
 
-    function handleLogin() {
+    useEffect(() => {
+      if (isLoggedIn) {
+          navigate('/');
+      }
+    }, [isLoggedIn, navigate]);
+
+    async function handleLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         console.log(email);
@@ -43,17 +49,17 @@ function Login() {
           return;
         }
 
-        const data = fetch("http://localhost:8000/login",{
+        await fetch("http://localhost:8000/login",{
           method:"POST",
           headers:{
             "Content-Type":"application/json"
           },
+          credentials: "include",
           body:JSON.stringify({
             email,
             password
           })
         }).then(response=>{
-          
           if(response.status === 404){
             new Notify({
               text:  "User not exists",
@@ -61,7 +67,7 @@ function Login() {
               effect: 'slide',
               speed: 300,
               showIcon: true,
-              showCloseButton: false,
+              showCloseButton: true,
               autoclose: true,
               position: 'x-center',
             });  
@@ -73,7 +79,7 @@ function Login() {
               effect: 'slide',
               speed: 300,
               showIcon: true,
-              showCloseButton: false,
+              showCloseButton: true,
               autoclose: true,
               position: 'x-center',
             });
@@ -90,8 +96,10 @@ function Login() {
               position: 'x-center',
             });
             setIsLoggedIn(true);
-            console.log(isLoggedIn,setIsLoggedIn);
-            navigate("/");
+            response.json().then(data => {
+              console.log(data.token);
+              navigate("/");
+          });
           }
         });
         

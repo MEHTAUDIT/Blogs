@@ -66,14 +66,29 @@ router.post("/login",async(req,res)=>{
         return res.status(404).json({message:"Invalid credentials"});
     }
 
-    res.cookie("token",generateToken(user));
+    const token = generateToken(user);
 
-    return res.status(200).json({message:"Logged in successfully"});
+    res.cookie("token",token);
+
+    return res.status(200).json({message:"Logged in successfully",token:token});
 });
 
 router.post("/logout",(req,res)=>{
     res.clearCookie("token");
-    res.status(200).json({message:"Logged out successfully"});
+    return res.status(200).json({message:"Logged out successfully"});
+});
+
+router.get("/check-session",async(req,res)=>{
+    
+    if(req.user===null){
+        return res.status(401).json({isLoggedIn:false});
+    }
+    
+    if(req.cookies?.token){
+        return res.status(200).json({isLoggedIn:true});
+    }
+    return res.status(401).json({isLoggedIn:false});
+
 });
 
 module.exports = router;

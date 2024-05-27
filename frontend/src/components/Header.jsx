@@ -8,7 +8,6 @@ import {
   Stack,
   Collapse,
   Icon,
-  Link,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -24,12 +23,27 @@ import {
 } from '@chakra-ui/icons';
 import BlogContext from '../store/blog-context';
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 function Header() {
   const { isOpen, onToggle } = useDisclosure();
 
   const { isLoggedIn, setIsLoggedIn } = useContext(BlogContext);
-  
+
+  function handleLogout() {
+    fetch("http://localhost:8000/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    }).then(response => {
+      if (response.status === 200) {
+        setIsLoggedIn(false);
+      }
+    });
+  }
+
   return (
     <Box>
       <Flex
@@ -76,24 +90,26 @@ function Header() {
 
           {
             (!isLoggedIn) && <Button
-              as={'a'}
+              as={Link}
+              to='/login'
               fontSize={'sm'}
               fontWeight={400}
               variant={'link'}
-              href={'http://localhost:3000/login'}>
+              
+              >
               Sign In
             </Button>
           }
 
           {
             (!isLoggedIn) && <Button
-              as={'a'}
+              as={Link}
               display={{ base: 'none', md: 'inline-flex' }}
               fontSize={'sm'}
               fontWeight={600}
               color={'white'}
               bg={'pink.400'}
-              href={'http://localhost:3000/register'}
+              to="/register"
               _hover={{
                 bg: 'pink.300',
               }}>
@@ -107,9 +123,9 @@ function Header() {
               fontSize={'sm'}
               fontWeight={400}
               variant={'link'}
-              onClick={() => setIsLoggedIn(false)}
-              href={'#'}>
-              Sign Out
+              onClick={handleLogout}
+              >
+              <Link color={'grey'} to="/login">Sign Out</Link>
             </Button>
           }
           
