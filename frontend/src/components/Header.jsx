@@ -24,6 +24,7 @@ import {
 import BlogContext from '../store/blog-context';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Notify from 'simple-notify';
 
 function Header() {
   const { isOpen, onToggle } = useDisclosure();
@@ -39,6 +40,18 @@ function Header() {
       credentials: "include"
     }).then(response => {
       if (response.status === 200) {
+
+        new Notify({
+          text: "User logged out successfully",
+          status: "success",
+          effect: 'slide',
+          speed: 300,
+          showIcon: true,
+          showCloseButton: true,
+          autoclose: true,
+          position: 'x-center',
+        });
+
         setIsLoggedIn(false);
       }
     });
