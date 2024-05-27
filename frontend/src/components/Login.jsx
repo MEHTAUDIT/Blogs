@@ -90,7 +90,7 @@ function Login() {
               position: 'x-center',
             });
             setIsLoggedIn(true);
-            console.log(isLoggedIn);
+            console.log(isLoggedIn,setIsLoggedIn);
             navigate("/");
           }
         });
