@@ -9,7 +9,9 @@ const {isAuthicated} = require('../middlewares/auth');
 router.post("/create",isAuthicated,async(req,res)=>{
     const title = req.body.title;
     const description = req.body.description;
-    const userId = req.user._id;
+    const userId = req.body.userId;
+
+    console.log(userId);
 
     const blog = await Blog.create({
         title:title,
@@ -24,7 +26,7 @@ router.get("/entry/:id",async (req,res)=>{
 
     const id = req.params.id;
 
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findOne({userId:id});
 
     if(!blog){
         return res.status(404).json({message:"Blog not found"});

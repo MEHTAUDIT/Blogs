@@ -19,8 +19,8 @@ router.post("/register",async(req,res)=>{
     if(check){
         return res.status(400).json({message:"email already exists",
     
-        isEmailExists:true
-    });
+            isEmailExists:true
+        });
     }
 
     check = await User.findOne({username});
@@ -40,7 +40,6 @@ router.post("/register",async(req,res)=>{
         role:role
     });
 
-    // console.log(user);
 
     return res.status(201).json({user});
 });
@@ -66,9 +65,9 @@ router.post("/login",async(req,res)=>{
         return res.status(404).json({message:"Invalid credentials"});
     }
 
-    const token = generateToken(user);
+    const token = await generateToken(user);
 
-    res.cookie("token",token);
+    res.cookie("token",token,{ httpOnly: true, secure: false });
     console.log(email);
     return res.status(200).json({message:"Logged in successfully",token:token,email:email});
 });
