@@ -14,7 +14,7 @@ import {
     useColorModeValue,
     Link,
   } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Notify from 'simple-notify'
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,18 @@ import { useNavigate } from 'react-router-dom';
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    const [firstName, setFirstName] = useState(localStorage.getItem('firstName') || '');
+    const [lastName, setLastName] = useState(localStorage.getItem('lastName') || '');
+    const [username, setUsername] = useState(localStorage.getItem('username') || '');
+    const [email, setEmail] = useState(localStorage.getItem('email') || '');
+
+    useEffect(() => {
+      localStorage.setItem('firstName', firstName);
+      localStorage.setItem('lastName', lastName);
+      localStorage.setItem('username', username);
+      localStorage.setItem('email', email);
+    }, [firstName, lastName, username, email]);
 
     function isEmail(emailAdress){
       let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -40,6 +52,11 @@ function Register() {
       console.log(username);
       console.log(email);
       console.log(password);
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('username');
+      localStorage.removeItem('email');
+
       if(username === '' || email === '' || password === '') {
         new Notify({
           text:  "Please fill in all fields",
@@ -141,23 +158,23 @@ function Register() {
                 <Box>
                   <FormControl id="firstName" isRequired>
                     <FormLabel>First Name</FormLabel>
-                    <Input type="text" />
+                    <Input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
                   </FormControl>
                 </Box>
                 <Box>
                   <FormControl id="lastName">
                     <FormLabel>Last Name</FormLabel>
-                    <Input type="text" />
+                    <Input type="text" value={lastName} onChange={e => setLastName(e.target.value)}  />
                   </FormControl>
                 </Box>
               </HStack>
               <FormControl id="username" isRequired>
                 <FormLabel>User Name</FormLabel>
-                <Input type="text" />
+                <Input type="text" value={username} onChange={e => setUsername(e.target.value)}/>
               </FormControl>
               <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" />
+                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} />
               </FormControl>
               <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>

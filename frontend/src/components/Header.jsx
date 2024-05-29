@@ -26,6 +26,15 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Notify from 'simple-notify';
 import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarBadge, AvatarGroup,
+
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+
+} from '@chakra-ui/react'
+import { AiOutlineUser } from 'react-icons/ai'
 
 function Header() {
   const { isOpen, onToggle } = useDisclosure();
@@ -42,6 +51,8 @@ function Header() {
     }).then(response => {
       if (response.status === 200) {
 
+        setIsLoggedIn(false);
+
         new Notify({
           text: "User logged out successfully",
           status: "success",
@@ -52,9 +63,9 @@ function Header() {
           autoclose: true,
           position: 'x-center',
         });
+        
         sessionStorage.removeItem('token');
-        setIsLoggedIn(false);
-
+        
         navigate("/login");
 
       }
@@ -134,17 +145,22 @@ function Header() {
             </Button>
           }
             
-          {
-            (isLoggedIn) && <Button
-              as={'a'}
-              fontSize={'sm'}
-              fontWeight={400}
-              variant={'link'}
-              onClick={handleLogout}
-              >
-              <Link color={'grey'} to="/login">Sign Out</Link>
-            </Button>
-          }
+        {isLoggedIn && (
+          <AvatarGroup spacing='1rem' style={{ cursor: 'pointer' }}>
+            <Menu>
+              <MenuButton>
+                <Avatar bg='teal.500' />
+              </MenuButton>
+              <MenuList>
+                <MenuItem   
+                  onClick={handleLogout}
+                >Logout</MenuItem>
+                <MenuItem>More Info</MenuItem>
+                <MenuItem>Address</MenuItem>
+              </MenuList>
+            </Menu>
+          </AvatarGroup>
+      )}
           
         </Stack>
       </Flex>
