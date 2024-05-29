@@ -69,25 +69,31 @@ router.post("/login",async(req,res)=>{
     const token = generateToken(user);
 
     res.cookie("token",token);
-
-    return res.status(200).json({message:"Logged in successfully",token:token});
+    console.log(email);
+    return res.status(200).json({message:"Logged in successfully",token:token,email:email});
 });
 
 router.post("/logout",(req,res)=>{
-    res.clearCookie("token");
-    return res.status(200).json({message:"Logged out successfully"});
+    res.clearCookie("token", { path: '/' });
+    return res.status(200).json({isLoggedIn:false});
 });
 
 router.get("/check-session",async(req,res)=>{
     
-    if(req.user===null){
-        return res.status(401).json({isLoggedIn:false});
+    if (req.user === null) {
+        return res.status(401).json({ isLoggedIn: false });
     }
+
+    return res.status(200).json({ isLoggedIn: true });
     
-    if(req.cookies?.token){
-        return res.status(200).json({isLoggedIn:true});
-    }
-    return res.status(401).json({isLoggedIn:false});
+    // if(req.user===null){
+    //     return res.status(401).json({isLoggedIn:false});
+    // }
+    
+    // if(req.cookies?.token){
+    //     return res.status(200).json({isLoggedIn:true});
+    // }
+    // return res.status(401).json({isLoggedIn:false});
 
 });
 

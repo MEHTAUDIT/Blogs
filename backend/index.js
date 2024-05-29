@@ -9,6 +9,7 @@ const BlogRoutes = require('./routes/blog');
 const cors = require('cors');
 const {isAuthicated} = require('./middlewares/auth');
 
+
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
 })
