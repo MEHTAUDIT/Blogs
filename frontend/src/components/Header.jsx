@@ -25,10 +25,11 @@ import BlogContext from '../store/blog-context';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import Notify from 'simple-notify';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const { isOpen, onToggle } = useDisclosure();
-
+  const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(BlogContext);
 
   function handleLogout() {
@@ -51,8 +52,11 @@ function Header() {
           autoclose: true,
           position: 'x-center',
         });
-
+        sessionStorage.removeItem('token');
         setIsLoggedIn(false);
+
+        navigate("/login");
+
       }
     });
   }

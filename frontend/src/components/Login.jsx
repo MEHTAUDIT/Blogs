@@ -49,7 +49,7 @@ function Login() {
           return;
         }
 
-        await fetch("http://localhost:8000/login",{
+        const data1 = await fetch("http://localhost:8000/login",{
           method:"POST",
           headers:{
             "Content-Type":"application/json"
@@ -59,8 +59,9 @@ function Login() {
             email,
             password
           })
-        }).then(response=>{
-          if(response.status === 404){
+        });
+        // .then(response=>{
+          if(data1.status === 404){
             new Notify({
               text:  "User not exists",
               status: "error",
@@ -72,7 +73,7 @@ function Login() {
               position: 'x-center',
             });  
           }
-          else if(response.status === 400){
+          else if(data1.status === 400){
             new Notify({
               text:  "Invalid credentials",
               status: "error",
@@ -84,9 +85,11 @@ function Login() {
               position: 'x-center',
             });
           }
-          else if(response.status === 200){
+          else if(data1.status === 200){
+            // const data = await data1.json();
             new Notify({
               text:  "Logged in successfully",
+              // text:`Email is ${data.email} `,
               status: "success",
               effect: 'slide',
               speed: 300,
@@ -95,13 +98,20 @@ function Login() {
               autoclose: true,
               position: 'x-center',
             });
-            setIsLoggedIn(true);
-            response.json().then(data => {
-              console.log(data.token);
+
+            data1.json().then(data => {
+              sessionStorage.setItem('token', data.token); 
+              setIsLoggedIn(true);
+              console.log(data.email);
               navigate("/");
-          });
+            });
+          //   setIsLoggedIn(true);
+          //   response.json().then(data => {
+          //     console.log(data.token);
+          //     navigate("/");
+          // });
           }
-        });
+        // });
         
         return;
     }

@@ -6,22 +6,19 @@ const BlogProvider = ({children}) =>{
     const [isLoggedIn,setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const checkSession = async () => {
-          const response = await fetch("http://localhost:8000/check-session", {
-            method: "GET",
-            credentials: "include"
+        const token = sessionStorage.getItem('token');
+        if (token) {
+          fetch("http://localhost:8000/check-session", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            setIsLoggedIn(data.isLoggedIn);
           });
-    
-          if (response.status === 200) {
-            setIsLoggedIn(true);
-          } else {
-            setIsLoggedIn(false);
-          }
-          console.log(isLoggedIn);
-        };
-    
-        checkSession();
-    }, []);
+        } 
+      }, []);
     
     const blogContext = {
         isLoggedIn,
